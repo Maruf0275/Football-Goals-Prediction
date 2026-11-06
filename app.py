@@ -1,4 +1,4 @@
-"""Streamlit dashboard for the pickle produced by Football_GoalCast_Colab.ipynb."""
+"""Streamlit dashboard for the Football GoalCast model."""
 import pickle
 from pathlib import Path
 
@@ -6,13 +6,16 @@ import numpy as np
 import pandas as pd
 import streamlit as st
 
+BASE_DIR = Path(__file__).resolve().parent
+MODEL_PATH = BASE_DIR / 'football_goalcast.pkl'
+
 st.set_page_config(page_title='Football GoalCast', page_icon='⚽', layout='wide')
 st.title('Football GoalCast')
 st.caption('Pre-match Premier League goal predictions using Scikit-learn')
 
 @st.cache_resource
 def read_model():
-    with Path('football_goalcast.pkl').open('rb') as file:
+    with MODEL_PATH.open('rb') as file:
         return pickle.load(file)  # Load only a pickle file you created and trust.
 
 
@@ -46,7 +49,7 @@ def make_features(home, away, history):
 try:
     saved = read_model()
 except FileNotFoundError:
-    st.error('Missing football_goalcast.pkl. First train and download it from Colab, then place it beside app.py.')
+    st.error('Missing football_goalcast.pkl. Add the model file beside app.py and redeploy the app.')
     st.stop()
 
 st.write(f"**Selected regression model:** {saved['model_name']}")
